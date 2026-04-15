@@ -27,4 +27,6 @@ public class PatientMapper {
         patient.setRegisteredDate(LocalDate.parse(patientRequestDTO.getRegisteredDate()));
         return patient;
     }
+
+
 }

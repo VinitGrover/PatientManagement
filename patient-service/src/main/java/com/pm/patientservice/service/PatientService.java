@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,12 +39,19 @@ public class PatientService {
     }
 
     public PatientResponseDTO updatePatient(UUID id, PatientRequestDTO patientRequestDTO){
-        if(patientRepository.existsById(id)){
-            Optional<Patient> patient = patientRepository.findById(id)
+            Patient patient = patientRepository.findById(id)
                     .orElseThrow(() -> new PatientNotFoundException("Patient not found with id: "+ id));
-            return PatientMapper.toDTO(patient);
+
+        if(patientRepository.existsByEmailAndIdNot(patientRequestDTO.getEmail(), id)){
+            throw new EmailAlreadyExistsException("A patient with this email already exists: "+ patientRequestDTO.getEmail());
         }
-        throw new EmailAlreadyExistsException("boooo");
+        patient.setName(patientRequestDTO.getName());
+        patient.setEmail(patientRequestDTO.getEmail());
+        patient.setAddress(patientRequestDTO.getAddress());
+        patient.setDateOfBirth(LocalDate.parse(patientRequestDTO.getDateOfBirth()));
+        Patient updatedPatient = patientRepository.save(patient);
+
+        return PatientMapper.toDTO(updatedPatient);
     }
 
 }
