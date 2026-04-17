@@ -21,7 +21,6 @@ import java.util.UUID;
 public class PatentController {
     private final PatientService patientService;
 
-    @Autowired
     public PatentController(PatientService patientService) {
         this.patientService = patientService;
     }
