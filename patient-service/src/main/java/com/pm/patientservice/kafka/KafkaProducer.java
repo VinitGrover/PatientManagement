@@ -26,7 +26,8 @@ public class KafkaProducer {
                 .build();
 
         try{
-            kafkaTemplate.send("patient", event.toByteArray());
+            kafkaTemplate.send("patient", event.toByteArray()).get();
+            log.info("successfully produced");
         }catch (Exception e){
             log.error("Error sending PatientCreated even: {}", event);
         }
